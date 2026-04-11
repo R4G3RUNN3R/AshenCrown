@@ -18,7 +18,8 @@ export type ItemDefinition = {
   description: string;
   sellPrice: number;
   sellable: boolean;
-  rarity?: "common" | "uncommon" | "rare" | "epic";
+  tradable?: boolean;
+  rarity?: "common" | "uncommon" | "rare" | "epic" | "legendary";
   usedFor?: string[];
 };
 
@@ -30,6 +31,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "Common flora gathered from roadsides and ruined fields. Useful for basic remedies.",
     sellPrice: 12,
     sellable: true,
+    tradable: true,
     rarity: "common",
   },
   medicinal_herb: {
@@ -39,6 +41,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "A cleaner, more potent healing herb sought by apothecaries.",
     sellPrice: 20,
     sellable: true,
+    tradable: true,
     rarity: "common",
   },
   healing_root: {
@@ -48,6 +51,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "A rare root with notable restorative properties.",
     sellPrice: 38,
     sellable: true,
+    tradable: true,
     rarity: "uncommon",
   },
   rough_wood: {
@@ -57,6 +61,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "Unfinished timber. Crude, useful, and never glamorous.",
     sellPrice: 10,
     sellable: true,
+    tradable: true,
     rarity: "common",
   },
   hardwood: {
@@ -66,6 +71,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "Dense, high-quality timber valued by carpenters and builders.",
     sellPrice: 22,
     sellable: true,
+    tradable: true,
     rarity: "common",
     usedFor: ["property upgrades"],
   },
@@ -76,6 +82,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "Raw iron waiting to become something useful.",
     sellPrice: 18,
     sellable: true,
+    tradable: true,
     rarity: "common",
     usedFor: ["crafting", "property upgrades"],
   },
@@ -86,6 +93,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "Fuel for forges, furnaces, and terrible working conditions.",
     sellPrice: 8,
     sellable: true,
+    tradable: true,
     rarity: "common",
   },
   scrap_metal: {
@@ -95,6 +103,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "Bent, salvaged metal that still has uses if you're not proud.",
     sellPrice: 11,
     sellable: true,
+    tradable: true,
     rarity: "common",
   },
   leather_strip: {
@@ -104,6 +113,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "Basic cured leather for straps, wraps, and practical work.",
     sellPrice: 14,
     sellable: true,
+    tradable: true,
     rarity: "common",
   },
   rope: {
@@ -113,6 +123,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "Useful in the same way gravity is useful. It just keeps mattering.",
     sellPrice: 9,
     sellable: true,
+    tradable: true,
     rarity: "common",
   },
   ancient_fragment: {
@@ -122,6 +133,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "A broken piece of carved antiquity. Historians pretend they're above paying for these.",
     sellPrice: 55,
     sellable: true,
+    tradable: true,
     rarity: "rare",
     usedFor: ["quests", "property upgrades"],
   },
@@ -132,6 +144,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "A partial map that implies value, danger, or both.",
     sellPrice: 44,
     sellable: true,
+    tradable: true,
     rarity: "uncommon",
   },
   stolen_coin: {
@@ -141,6 +154,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "A liberated coin with no emotional attachment to its former owner.",
     sellPrice: 16,
     sellable: true,
+    tradable: true,
     rarity: "common",
   },
   rare_gemstone: {
@@ -150,6 +164,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "Uncut but clearly valuable. Jewelers and fences both approve.",
     sellPrice: 90,
     sellable: true,
+    tradable: true,
     rarity: "rare",
     usedFor: ["property upgrades", "luxury upgrades"],
   },
@@ -160,6 +175,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "Convincing enough to be dangerous.",
     sellPrice: 36,
     sellable: true,
+    tradable: true,
     rarity: "uncommon",
   },
   lockpick: {
@@ -169,6 +185,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "A practical tool for people with flexible morality.",
     sellPrice: 14,
     sellable: true,
+    tradable: true,
     rarity: "common",
   },
   rations: {
@@ -178,6 +195,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "Travel food. Inspires no songs.",
     sellPrice: 7,
     sellable: true,
+    tradable: true,
     rarity: "common",
   },
   worn_boots: {
@@ -187,6 +205,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "Still functional, which is more than can be said for most adventurers.",
     sellPrice: 12,
     sellable: true,
+    tradable: true,
     rarity: "common",
   },
   stone_block: {
@@ -196,6 +215,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "Cut stone useful in construction and reinforcement work.",
     sellPrice: 13,
     sellable: true,
+    tradable: true,
     rarity: "common",
     usedFor: ["property upgrades"],
   },
@@ -206,6 +226,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "Raw clay for brickwork, pottery, or more excuses to make mud valuable.",
     sellPrice: 6,
     sellable: true,
+    tradable: true,
     rarity: "common",
   },
   vial_of_ink: {
@@ -215,6 +236,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "Useful for scribes, forgers, and anyone documenting bad decisions.",
     sellPrice: 17,
     sellable: true,
+    tradable: true,
     rarity: "common",
   },
   wax_seal: {
@@ -224,9 +246,9 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "Looks official enough to cause problems.",
     sellPrice: 15,
     sellable: true,
+    tradable: true,
     rarity: "common",
   },
-
   broken_dagger: {
     id: "broken_dagger",
     name: "Broken Dagger",
@@ -234,6 +256,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "Too damaged for combat, still worth a few coins to a scrap dealer.",
     sellPrice: 5,
     sellable: true,
+    tradable: true,
     rarity: "common",
   },
   torn_cloak: {
@@ -243,6 +266,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "A ragged old cloak with more holes than dignity.",
     sellPrice: 4,
     sellable: true,
+    tradable: true,
     rarity: "common",
   },
   cracked_lantern: {
@@ -252,6 +276,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "Still technically a lantern if your standards are low enough.",
     sellPrice: 6,
     sellable: true,
+    tradable: true,
     rarity: "common",
   },
   rusted_gear: {
@@ -261,6 +286,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "Metal scrap from some dead mechanism. Vendors love buying failure by weight.",
     sellPrice: 5,
     sellable: true,
+    tradable: true,
     rarity: "common",
   },
   bent_nails: {
@@ -270,6 +296,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "Barely useful, but still saleable in bulk to the right miser.",
     sellPrice: 3,
     sellable: true,
+    tradable: true,
     rarity: "common",
   },
   chipped_mug: {
@@ -279,9 +306,9 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "A tavern relic with no sentimental value and limited structural integrity.",
     sellPrice: 4,
     sellable: true,
+    tradable: true,
     rarity: "common",
   },
-
   refined_iron: {
     id: "refined_iron",
     name: "Refined Iron",
@@ -289,6 +316,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "Processed iron ready for proper crafting and structural reinforcement.",
     sellPrice: 35,
     sellable: true,
+    tradable: true,
     rarity: "uncommon",
     usedFor: ["property upgrades", "advanced crafting"],
   },
@@ -299,6 +327,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "Prepared hide resistant to wear and weather.",
     sellPrice: 28,
     sellable: true,
+    tradable: true,
     rarity: "uncommon",
   },
   alchemical_powder: {
@@ -308,6 +337,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "A volatile powder used in advanced craftwork, enchantment, and expensive mistakes.",
     sellPrice: 65,
     sellable: true,
+    tradable: true,
     rarity: "rare",
     usedFor: ["property upgrades", "alchemy", "crafting"],
   },
@@ -318,6 +348,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "A condensed magical crystal that holds stable arcane charge.",
     sellPrice: 120,
     sellable: true,
+    tradable: true,
     rarity: "rare",
     usedFor: ["property upgrades", "arcane upgrades"],
   },
@@ -328,6 +359,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "A carved stone etched with lasting magical script.",
     sellPrice: 140,
     sellable: true,
+    tradable: true,
     rarity: "rare",
     usedFor: ["property upgrades", "warding"],
   },
@@ -338,10 +370,10 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "A luminous residue from an otherworldly entity. Useful, valuable, and probably ill-advised.",
     sellPrice: 180,
     sellable: true,
+    tradable: true,
     rarity: "epic",
     usedFor: ["advanced upgrades", "future spirit systems"],
   },
-
   foundation_keystone: {
     id: "foundation_keystone",
     name: "Foundation Keystone",
@@ -349,6 +381,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "A master-cut structural stone required for major property expansion and higher-tier housing upgrades.",
     sellPrice: 0,
     sellable: false,
+    tradable: true,
     rarity: "rare",
     usedFor: ["property upgrades", "tier unlocks"],
   },
@@ -359,6 +392,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "A stabilising focus used to bind magical infrastructure into a property safely.",
     sellPrice: 0,
     sellable: false,
+    tradable: true,
     rarity: "epic",
     usedFor: ["arcane property upgrades"],
   },
@@ -369,6 +403,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "A bundled set of rare fittings and support materials used to reinforce buildings beyond common standards.",
     sellPrice: 0,
     sellable: false,
+    tradable: true,
     rarity: "rare",
     usedFor: ["property upgrades"],
   },
@@ -379,6 +414,7 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     description: "A refined channeling component used for future passive comfort or regeneration systems.",
     sellPrice: 0,
     sellable: false,
+    tradable: true,
     rarity: "epic",
     usedFor: ["future passive upgrades"],
   },
@@ -386,11 +422,12 @@ export const ITEM_CATALOGUE: Record<string, ItemDefinition> = {
     id: "black_market_ledger",
     name: "Black Market Ledger",
     category: "Key",
-    description: "A coded transaction book tied to illicit trade networks. Vendors won't buy it, but the right people definitely will care.",
-    sellPrice: 0,
-    sellable: false,
-    rarity: "epic",
-    usedFor: ["black market unlock"],
+    description: "A coded ledger tied to contraband routes and hidden brokers. More rumor than object, and valuable enough to move between players.",
+    sellPrice: 75000,
+    sellable: true,
+    tradable: true,
+    rarity: "legendary",
+    usedFor: ["western academy contraband route", "player trading", "black market access chain"],
   },
 };
 
