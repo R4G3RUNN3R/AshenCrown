@@ -1,12 +1,12 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // Nexis — Housing Page
-// Nexis property system: own one property at a time, buy upgrades per tier.
-// Shows current property panel at top, full tier list below.
+// Housing with material-aware upgrades.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useState } from "react";
 import { AppShell } from "../components/layout/AppShell";
 import { usePlayer } from "../state/PlayerContext";
+import { ITEM_CATALOGUE } from "../data/itemData";
 import {
   propertyTiers,
   getPropertyById,
@@ -15,8 +15,6 @@ import {
   type PropertyUpgrade,
 } from "../data/propertyData";
 import "../styles/housing.css";
-
-// ─── Current Property Panel ───────────────────────────────────────────────────
 
 function CurrentPropertyPanel({ tier }: { tier: PropertyTier }) {
   const { player } = usePlayer();
@@ -37,7 +35,6 @@ function CurrentPropertyPanel({ tier }: { tier: PropertyTier }) {
         <div className="housing-current__label">Current Residence</div>
         <div className="housing-current__name">{tier.name}</div>
         <div className="housing-current__flavour">{tier.flavour}</div>
-
         <div className="housing-current__stats">
           <div className="housing-stat">
             <span className="housing-stat__key">Max Comfort</span>
@@ -45,9 +42,7 @@ function CurrentPropertyPanel({ tier }: { tier: PropertyTier }) {
           </div>
           <div className="housing-stat">
             <span className="housing-stat__key">Upgrade Slots</span>
-            <span className="housing-stat__val">
-              {installedCount} / {tier.upgradeSlots} used
-            </span>
+            <span className="housing-stat__val">{installedCount} / {tier.upgradeSlots} used</span>
           </div>
           <div className="housing-stat">
             <span className="housing-stat__key">Upkeep</span>
@@ -67,17 +62,17 @@ function CurrentPropertyPanel({ tier }: { tier: PropertyTier }) {
   );
 }
 
-// ─── Upgrade Card ─────────────────────────────────────────────────────────────
-
 function UpgradeCard({
   upgrade,
   isInstalled,
   canAfford,
+  hasMaterials,
   onInstall,
 }: {
   upgrade: PropertyUpgrade;
   isInstalled: boolean;
   canAfford: boolean;
+  hasMaterials: boolean;
   onInstall: (upgrade: PropertyUpgrade) => void;
 }) {
   return (
@@ -85,11 +80,7 @@ function UpgradeCard({
       <div className="housing-upgrade__top">
         <div className="housing-upgrade__name">{upgrade.name}</div>
         <div className="housing-upgrade__cost">
-          {isInstalled ? (
-            <span className="housing-upgrade__installed-tag">✓ Installed</span>
-          ) : (
-            formatGold(upgrade.cost)
-          )}
+          {isInstalled ? <span className="housing-upgrade__installed-tag">✓ Installed</span> : formatGold(upgrade.cost)}
         </div>
       </div>
       <div className="housing-upgrade__desc">{upgrade.description}</div>
@@ -98,21 +89,38 @@ function UpgradeCard({
           <li key={e}>{e}</li>
         ))}
       </ul>
+
+      {upgrade.requirements && upgrade.requirements.length > 0 && (
+        <div className="info-list" style={{ marginTop: "0.75rem" }}>
+          {upgrade.requirements.map((req) => {
+            const item = ITEM_CATALOGUE[req.itemId];
+            return (
+              <div className="info-row" key={req.itemId}>
+                <span className="info-row__label">{item?.name ?? req.itemId}</span>
+                <span className="info-row__value">× {req.qty}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       {!isInstalled && (
         <button
           type="button"
           className="housing-upgrade__btn"
-          disabled={!canAfford}
+          disabled={!canAfford || !hasMaterials}
           onClick={() => onInstall(upgrade)}
         >
-          {canAfford ? "Install" : "Insufficient Gold"}
+          {canAfford
+            ? hasMaterials
+              ? "Install"
+              : "Missing Materials"
+            : "Insufficient Gold"}
         </button>
       )}
     </div>
   );
 }
-
-// ─── Property Tier Row ────────────────────────────────────────────────────────
 
 function PropertyRow({
   tier,
@@ -141,9 +149,7 @@ function PropertyRow({
         <div className="housing-tier-row__summary">{tier.summary}</div>
       </div>
       <div className="housing-tier-row__meta">
-        <div className="housing-tier-row__comfort">
-          {tier.baseComfort}–{tier.maxComfort} comfort
-        </div>
+        <div className="housing-tier-row__comfort">{tier.baseComfort}–{tier.maxComfort} comfort</div>
         <div className={`housing-tier-row__price${isOwned ? " housing-tier-row__price--owned" : ""}`}>
           {isOwned ? "Owned" : tier.price === 0 ? "Free" : formatGold(tier.price)}
         </div>
@@ -151,8 +157,6 @@ function PropertyRow({
     </button>
   );
 }
-
-// ─── Detail Panel ─────────────────────────────────────────────────────────────
 
 function PropertyDetailPanel({
   tier,
@@ -167,6 +171,7 @@ function PropertyDetailPanel({
 }) {
   const { player } = usePlayer();
   const installed = player.property.installedUpgrades;
+  const inventory = player.inventory ?? {};
   const canAffordProperty = player.gold >= tier.price;
 
   const installedCount = tier.upgrades.filter((u) => installed.includes(u.id)).length;
@@ -176,7 +181,6 @@ function PropertyDetailPanel({
 
   return (
     <div className="housing-detail">
-      {/* Header */}
       <div className="housing-detail__header">
         <span className="housing-detail__icon">{tier.icon}</span>
         <div className="housing-detail__header-info">
@@ -185,7 +189,6 @@ function PropertyDetailPanel({
         </div>
       </div>
 
-      {/* Stats row */}
       <div className="housing-detail__stats">
         <div className="housing-detail__stat">
           <span>Base Comfort</span>
@@ -193,27 +196,18 @@ function PropertyDetailPanel({
         </div>
         <div className="housing-detail__stat">
           <span>Max Comfort (full)</span>
-          <strong>
-            {isOwned
-              ? tier.baseComfort + comfortFromUpgrades
-              : tier.maxComfort}
-          </strong>
+          <strong>{isOwned ? tier.baseComfort + comfortFromUpgrades : tier.maxComfort}</strong>
         </div>
         <div className="housing-detail__stat">
           <span>Upgrade Slots</span>
-          <strong>
-            {isOwned ? `${installedCount} / ${tier.upgradeSlots}` : tier.upgradeSlots}
-          </strong>
+          <strong>{isOwned ? `${installedCount} / ${tier.upgradeSlots}` : tier.upgradeSlots}</strong>
         </div>
         <div className="housing-detail__stat">
           <span>Upkeep / Day</span>
-          <strong>
-            {tier.upkeepPerDay === 0 ? "Free" : formatGold(tier.upkeepPerDay)}
-          </strong>
+          <strong>{tier.upkeepPerDay === 0 ? "Free" : formatGold(tier.upkeepPerDay)}</strong>
         </div>
       </div>
 
-      {/* Purchase button (if not owned) */}
       {!isOwned && (
         <div className="housing-detail__purchase-row">
           <div className="housing-detail__purchase-note">
@@ -230,15 +224,12 @@ function PropertyDetailPanel({
               disabled={!canAffordProperty}
               onClick={() => onPurchase(tier)}
             >
-              {canAffordProperty
-                ? `Move In — ${formatGold(tier.price)}`
-                : "Cannot Afford"}
+              {canAffordProperty ? `Move In — ${formatGold(tier.price)}` : "Cannot Afford"}
             </button>
           )}
         </div>
       )}
 
-      {/* Upgrades */}
       {tier.upgradeSlots > 0 && (
         <div className="housing-detail__upgrades">
           <div className="housing-detail__upgrades-header">
@@ -250,23 +241,25 @@ function PropertyDetailPanel({
                 </span>
               )}
             </div>
-            {!isOwned && (
-              <div className="housing-detail__upgrades-note">
-                Purchase this property to install upgrades.
-              </div>
-            )}
+            {!isOwned && <div className="housing-detail__upgrades-note">Purchase this property to install upgrades.</div>}
           </div>
 
           <div className="housing-detail__upgrade-grid">
-            {tier.upgrades.map((u) => (
-              <UpgradeCard
-                key={u.id}
-                upgrade={u}
-                isInstalled={installed.includes(u.id)}
-                canAfford={isOwned && player.gold >= u.cost && !installed.includes(u.id)}
-                onInstall={onInstallUpgrade}
-              />
-            ))}
+            {tier.upgrades.map((u) => {
+              const hasMaterials = (u.requirements ?? []).every(
+                (req) => (inventory[req.itemId] ?? 0) >= req.qty
+              );
+              return (
+                <UpgradeCard
+                  key={u.id}
+                  upgrade={u}
+                  isInstalled={installed.includes(u.id)}
+                  canAfford={isOwned && player.gold >= u.cost && !installed.includes(u.id)}
+                  hasMaterials={isOwned && hasMaterials && !installed.includes(u.id)}
+                  onInstall={onInstallUpgrade}
+                />
+              );
+            })}
           </div>
         </div>
       )}
@@ -280,16 +273,13 @@ function PropertyDetailPanel({
   );
 }
 
-// ─── Housing Page ─────────────────────────────────────────────────────────────
-
 export default function HousingPage() {
-  const { player, purchaseProperty, installUpgrade } = usePlayer();
+  const { player, purchaseProperty, installUpgrade, removeItem } = usePlayer();
   const [selectedTierId, setSelectedTierId] = useState(player.property.current);
   const [toast, setToast] = useState<string | null>(null);
 
   const currentTier = getPropertyById(player.property.current) ?? propertyTiers[0];
-  const selectedTier =
-    propertyTiers.find((t) => t.id === selectedTierId) ?? currentTier;
+  const selectedTier = propertyTiers.find((t) => t.id === selectedTierId) ?? currentTier;
   const isSelectedOwned = selectedTierId === player.property.current;
 
   function showToast(msg: string) {
@@ -308,32 +298,41 @@ export default function HousingPage() {
   }
 
   function handleInstallUpgrade(upgrade: PropertyUpgrade) {
-    const ok = installUpgrade(upgrade.id, upgrade.cost);
-    if (ok) {
-      showToast(`${upgrade.name} installed.`);
-    } else {
-      showToast("Could not install upgrade.");
+    const inventory = player.inventory ?? {};
+    const requirements = upgrade.requirements ?? [];
+    const hasMaterials = requirements.every((req) => (inventory[req.itemId] ?? 0) >= req.qty);
+
+    if (!hasMaterials) {
+      showToast("Missing materials.");
+      return;
     }
+
+    const ok = installUpgrade(upgrade.id, upgrade.cost);
+    if (!ok) {
+      showToast("Could not install upgrade.");
+      return;
+    }
+
+    for (const req of requirements) {
+      removeItem(req.itemId, req.qty);
+    }
+
+    showToast(`${upgrade.name} installed.`);
   }
 
   return (
     <AppShell title="Housing">
       <div className="housing-page">
-        {/* Toast */}
         {toast && <div className="housing-toast">{toast}</div>}
 
-        {/* Gold bar */}
         <div className="housing-gold-bar">
           <span className="housing-gold-bar__label">Your gold</span>
           <span className="housing-gold-bar__value">{formatGold(player.gold)}</span>
         </div>
 
-        {/* Current property panel */}
         <CurrentPropertyPanel tier={currentTier} />
 
-        {/* Two-column layout: tier list + detail panel */}
         <div className="housing-layout">
-          {/* Left: tier list */}
           <div className="housing-tiers">
             <div className="housing-tiers__heading">All Properties</div>
             {propertyTiers.map((tier) => (
@@ -347,7 +346,6 @@ export default function HousingPage() {
             ))}
           </div>
 
-          {/* Right: detail panel */}
           <div className="housing-detail-wrap">
             <PropertyDetailPanel
               tier={selectedTier}
