@@ -12,14 +12,41 @@ const CATEGORY_LABELS: Record<string, string> = {
   restricted_tool: "Restricted Tools",
 };
 
+const STORAGE_KEY = "nexis_black_market_stock";
+
+function getInitialStock(): Record<string, number> {
+  if (typeof window === "undefined") {
+    return Object.fromEntries(blackMarketListings.map((listing) => [listing.id, listing.stock]));
+  }
+
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      return Object.fromEntries(blackMarketListings.map((listing) => [listing.id, listing.stock]));
+    }
+
+    const parsed = JSON.parse(raw) as Record<string, number>;
+    return Object.fromEntries(
+      blackMarketListings.map((listing) => [listing.id, parsed[listing.id] ?? listing.stock])
+    );
+  } catch {
+    return Object.fromEntries(blackMarketListings.map((listing) => [listing.id, listing.stock]));
+  }
+}
+
 export default function BlackMarketPage() {
   const { hasPassive, academyState } = useAcademyRuntime();
   const { player, spendGold, addItem } = usePlayer();
   const unlocked = hasPassive("blackMarketAccess");
-  const [stockState, setStockState] = useState<Record<string, number>>(() =>
-    Object.fromEntries(blackMarketListings.map((listing) => [listing.id, listing.stock]))
-  );
+  const [stockState, setStockState] = useState<Record<string, number>>(getInitialStock);
   const [toast, setToast] = useState<string | null>(null);
+
+  function persistStock(next: Record<string, number>) {
+    setStockState(next);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    }
+  }
 
   function showToast(message: string) {
     setToast(message);
@@ -52,10 +79,11 @@ export default function BlackMarketPage() {
     }
 
     addItem(listing.itemId, 1);
-    setStockState((prev) => ({
-      ...prev,
-      [listingId]: Math.max(0, (prev[listingId] ?? 0) - 1),
-    }));
+    const nextStock = {
+      ...stockState,
+      [listingId]: Math.max(0, stock - 1),
+    };
+    persistStock(nextStock);
     showToast(`${listing.name} acquired.`);
   }
 

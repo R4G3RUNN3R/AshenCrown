@@ -3,6 +3,7 @@ import AppRouter from "./router";
 import { AuthProvider, useAuth } from "./state/AuthContext";
 import { PlayerProvider, usePlayer } from "./state/PlayerContext";
 import { EducationProvider } from "./state/EducationContext";
+import { EducationRuntimeProvider } from "./state/EducationRuntimeContext";
 import { JobsProvider } from "./state/JobsContext";
 import { ArenaProvider } from "./state/ArenaContext";
 import { AcademyRuntimeProvider } from "./state/AcademyRuntimeContext";
@@ -27,18 +28,20 @@ export default function App() {
     <AuthProvider>
       <PlayerProvider>
         <AcademyRuntimeProvider>
-          <JobsProvider>
-            <ArenaProvider>
-              <EducationProvider>
-                <BrowserRouter>
-                  <AuthGate>
-                    <AppRouter />
-                    <Ciel />
-                  </AuthGate>
-                </BrowserRouter>
-              </EducationProvider>
-            </ArenaProvider>
-          </JobsProvider>
+          <EducationRuntimeProvider>
+            <JobsProvider>
+              <ArenaProvider>
+                <EducationProvider>
+                  <BrowserRouter>
+                    <AuthGate>
+                      <AppRouter />
+                      <Ciel />
+                    </AuthGate>
+                  </BrowserRouter>
+                </EducationProvider>
+              </ArenaProvider>
+            </JobsProvider>
+          </EducationRuntimeProvider>
         </AcademyRuntimeProvider>
       </PlayerProvider>
     </AuthProvider>
