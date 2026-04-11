@@ -27,17 +27,17 @@ export default function AppRouter() {
   return (
     <Routes>
       <Route path="/register" element={<RegisterPage />} />
-      <Route path="/" element={<HomePage />} />
-      <Route path="/inventory" element={<InventoryPage />} />
-      <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/achievements" element={<AchievementsPage />} />
-      <Route path="/housing" element={<HousingPage />} />
-      <Route path="/guild" element={<GuildPage />} />
-      <Route path="/hospital" element={<HospitalPage />} />
-      <Route path="/city-board" element={<CityBoardPage />} />
-      <Route path="/skills" element={<SkillsPage />} />
-      <Route path="/tavern" element={<TavernPage />} />
 
+      <Route path="/" element={<RouteGuard><HomePage /></RouteGuard>} />
+      <Route path="/inventory" element={<RouteGuard><InventoryPage /></RouteGuard>} />
+      <Route path="/profile" element={<RouteGuard><ProfilePage /></RouteGuard>} />
+      <Route path="/achievements" element={<RouteGuard><AchievementsPage /></RouteGuard>} />
+      <Route path="/housing" element={<RouteGuard><HousingPage /></RouteGuard>} />
+      <Route path="/guild" element={<RouteGuard><GuildPage /></RouteGuard>} />
+      <Route path="/hospital" element={<RouteGuard><HospitalPage /></RouteGuard>} />
+      <Route path="/city-board" element={<RouteGuard><CityBoardPage /></RouteGuard>} />
+      <Route path="/skills" element={<RouteGuard><SkillsPage /></RouteGuard>} />
+      <Route path="/tavern" element={<RouteGuard><TavernPage /></RouteGuard>} />
       <Route path="/education" element={<RouteGuard><EducationPage /></RouteGuard>} />
       <Route path="/jobs" element={<RouteGuard><JobsPage /></RouteGuard>} />
       <Route path="/arena" element={<RouteGuard><ArenaPage /></RouteGuard>} />
