@@ -1,6 +1,9 @@
 ﻿.deploy/
-*.tgz
+.data/
 node_modules/
 dist/
+*.tgz
+*.log
 .env
 .env.*
+*.tsbuildinfo
