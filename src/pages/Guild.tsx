@@ -1,5 +1,7 @@
-import { PlaceholderPage } from "../components/layout/PlaceholderPage";
+// Guild page implemented
+import { useMemo, useState } from "react";
+import { AppShell } from "../components/layout/AppShell";
+import { usePlayer } from "../state/PlayerContext";
+import "../styles/guild.css";
 
-export default function GuildPage() {
-  return <PlaceholderPage title="Guilds / Consortiums" />;
-}
+export default function GuildPage(){const{player}=usePlayer();const[intent,setIntent]=useState(null);const[selectedType,setSelectedType]=useState("guild");const rule=selectedType==="guild"?{label:"Guild",item:"Guild Charter",goldItem:50000,goldNo:150000}:{label:"Consortium",item:"Consortium Writ",goldItem:75000,goldNo:200000};const hasItem=(player.inventory[selectedType==="guild"?"guild_charter":"consortium_writ"]||0)>0;const reqGold=hasItem?rule.goldItem:rule.goldNo;const levelOk=hasItem||player.level>=10;const goldOk=player.gold>=reqGold;const canCreate=levelOk&&goldOk;return(<AppShell title="Guilds / Consortiums"><div className="guild"><h2>Choose your path</h2><button onClick={()=>setIntent("create")}>Create</button><button onClick={()=>setIntent("join")}>Join</button>{intent==="create"&&(<div><h3>{rule.label}</h3><button onClick={()=>setSelectedType("guild")}>Guild</button><button onClick={()=>setSelectedType("consortium")}>Consortium</button><p>{rule.item}:{hasItem?"Present":"Missing"}</p><p>Gold needed:{reqGold}</p><p>Level requirement:{hasItem?"None":"10+"}</p><p>{canCreate?"You can create":"You cannot create"}</p></div>)}</div></AppShell>);}
